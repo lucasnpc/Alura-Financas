@@ -4,4 +4,4 @@ import java.text.DateFormat
 import java.util.*
 
 fun Calendar.brazilianDateFormat(): String =
-    DateFormat.getDateInstance(DateFormat.MEDIUM, Locale("pt", "br")).format(this.time)
+    DateFormat.getDateInstance(DateFormat.SHORT, Locale("pt", "br")).format(this.time)

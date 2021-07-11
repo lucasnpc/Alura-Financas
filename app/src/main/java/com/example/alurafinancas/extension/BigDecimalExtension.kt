@@ -5,4 +5,4 @@ import java.text.DecimalFormat
 import java.util.*
 
 fun BigDecimal.brazilianCurrencyFormat(): String =
-    DecimalFormat.getCurrencyInstance(Locale("pt", "br")).format(this)
+    DecimalFormat.getCurrencyInstance(Locale("pt", "BR")).format(this).replace("-R$", "R$ -")

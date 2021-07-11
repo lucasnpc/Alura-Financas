@@ -14,8 +14,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:background="@color/colorBackground"
+            android:orientation="vertical"
             fab:layout_constraintLeft_toLeftOf="parent"
             fab:layout_constraintRight_toRightOf="parent"
             fab:layout_constraintTop_toTopOf="parent">
@@ -32,6 +32,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:visibility="gone"
                 fab:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 fab:layout_constraintLeft_toLeftOf="parent"
                 fab:layout_constraintRight_toRightOf="parent"

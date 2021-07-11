@@ -4,6 +4,13 @@
 
     <data>
 
+        <variable
+            name="viewmodel"
+            type="com.example.alurafinancas.ui.listaTransacoes.TransactionsListViewModel" />
+
+        <variable
+            name="type"
+            type="com.example.alurafinancas.data.enumList.Type" />
     </data>
 
     <androidx.cardview.widget.CardView
@@ -14,9 +21,9 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:baselineAligned="false"
             android:orientation="horizontal"
-            android:padding="10dp"
-            android:baselineAligned="false">
+            android:padding="10dp">
 
             <LinearLayout
                 android:layout_width="0dp"
@@ -54,16 +61,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:textColor="@color/receita"
                     android:textSize="20sp"
-                    tools:text="R$ 1000000,00" />
+                    tools:text="@{viewmodel.result.success ? viewmodel.sumByType(type.RECEITA) : @string/null_value}" />
 
                 <TextView
                     android:id="@+id/resumo_card_despesa"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
+                    android:textColor="@color/despesa"
                     android:textSize="20sp"
-                    tools:text="R$ 10000,00" />
+                    tools:text="@{viewmodel.result.success ? viewmodel.sumByType(type.DESPESA) : @string/null_value}" />
 
                 <View
                     android:layout_width="match_parent"
@@ -76,8 +85,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="end"
-                    android:textSize="20sp"
-                    tools:text="R$ 1000,00" />
+                    android:text="@{viewmodel.result.success ? viewmodel.sumTotal() : @string/null_value}"
+                    android:textColor="@{viewmodel.state.totalGreaterThanZero ? @color/receita : @color/despesa}"
+                    android:textSize="20sp" />
 
             </LinearLayout>
         </LinearLayout>

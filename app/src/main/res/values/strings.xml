@@ -13,4 +13,5 @@
     <string name="total">Total</string>
     <string name="mes">Mês</string>
     <string name="ano">Ano</string>
+    <string name="null_value">0</string>
 </resources>
