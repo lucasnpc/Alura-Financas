@@ -14,6 +14,7 @@
 
 
         <androidx.cardview.widget.CardView
+            android:id="@+id/card_transaction"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
@@ -34,7 +35,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    tools:src="@drawable/icone_transacao_item_despesa" />
+                    tools:src="@drawable/icone_transacao_item_despesa"
+                    android:contentDescription="@string/transaction_type_image" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="0dp"

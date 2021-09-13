@@ -13,7 +13,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@color/colorBackground"
             android:orientation="vertical"
             fab:layout_constraintLeft_toLeftOf="parent"
@@ -45,7 +45,7 @@
             android:id="@+id/lista_transacoes_adiciona_menu"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true"
             android:layout_alignParentBottom="true"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"

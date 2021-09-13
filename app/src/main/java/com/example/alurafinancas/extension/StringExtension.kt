@@ -12,12 +12,9 @@ fun String.stringLimit(limit: Int) =
     }..." else this
 
 fun String.undoBrazilianFormat(): Double =
-    if (this.contains("-"))
-        this.substring(5)
-            .replace(",", ".").toDouble()
-    else
-        this.substring(3).replace(",", ".").toDouble()
+    this.substring(startIndex = 3, endIndex = this.length).replace(".", "")
+        .replace(",", ".").toDouble()
 
-fun String.convertToCalendar(): Date =
-    SimpleDateFormat("dd/MM/yyyy").parse(this)
+fun String.convertToCalendar(): Date? =
+    SimpleDateFormat("dd/MM/yyyy", Locale("pt", "br")).parse(this)
 

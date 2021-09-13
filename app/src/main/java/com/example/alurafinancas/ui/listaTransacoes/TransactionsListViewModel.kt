@@ -5,9 +5,11 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.alurafinancas.data.TransactionsRepository
 import com.example.alurafinancas.data.enumList.Type
+import com.example.alurafinancas.data.model.Transaction
 import com.example.alurafinancas.extension.brazilianCurrencyFormat
 import com.example.alurafinancas.extension.undoBrazilianFormat
-import com.example.alurafinancas.ui.listaTransacoes.dialog.TransactionsDialog
+import com.example.alurafinancas.ui.listaTransacoes.dialog.AddTransactionsDialog
+import com.example.alurafinancas.ui.listaTransacoes.dialog.UpdateTransactionsDialog
 import com.example.alurafinancas.util.VerifyTransactionsListState
 import java.math.BigDecimal
 
@@ -29,15 +31,29 @@ class TransactionsListViewModel(val transactionsRepository: TransactionsReposito
             sumByType(Type.RECEITA).undoBrazilianFormat() - sumByType(Type.DESPESA).undoBrazilianFormat()
         ).brazilianCurrencyFormat()
 
-
-    fun openDialog(
+    fun openAddDialog(
         type: Type,
-        transactionsDialog: TransactionsDialog
+        addTransactionsDialog: AddTransactionsDialog
     ) {
-        transactionsDialog.createDialog(
+        addTransactionsDialog.createDialog(
             _result,
             transactionsRepository,
             type
+        )
+    }
+
+    fun openUpdateDialog(
+        transaction: Transaction,
+        type: Type,
+        updateTransactionsDialog: UpdateTransactionsDialog,
+        position: Int
+    ) {
+        updateTransactionsDialog.createDialog(
+            _result,
+            transactionsRepository,
+            type,
+            transaction,
+            position
         )
     }
 

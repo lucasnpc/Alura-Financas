@@ -16,4 +16,17 @@ class TransactionsRepository {
             result.value =
                 TransactionsListResult(success = true, transactions = ArrayList(transactions))
         }
+
+    fun updateTransactions(
+        transaction: Transaction,
+        result: MutableLiveData<TransactionsListResult>,
+        position: Int
+    ) =
+        if (transaction.valor == BigDecimal.ZERO) {
+            result.value = TransactionsListResult(failed = true)
+        } else {
+            transactions[position] = transaction
+            result.value =
+                TransactionsListResult(success = true, transactions = ArrayList(transactions))
+        }
 }

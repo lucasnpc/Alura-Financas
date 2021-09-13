@@ -6,25 +6,28 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.res.ResourcesCompat
-import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.alurafinancas.R
 import com.example.alurafinancas.data.enumList.Type
+import com.example.alurafinancas.data.model.Transaction
 import com.example.alurafinancas.databinding.ActivityListaTransacoesBinding
 import com.example.alurafinancas.ui.listaTransacoes.adapter.TransactionsListAdapter
-import com.example.alurafinancas.ui.listaTransacoes.dialog.TransactionsDialog
+import com.example.alurafinancas.ui.listaTransacoes.dialog.AddTransactionsDialog
+import com.example.alurafinancas.ui.listaTransacoes.dialog.UpdateTransactionsDialog
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
 
 class TransactionsListActivity : AppCompatActivity() {
 
-    private lateinit var binding: ActivityListaTransacoesBinding
+    private val binding by lazy {
+        ActivityListaTransacoesBinding.inflate(layoutInflater)
+    }
     private val transactionsListViewModel: TransactionsListViewModel by viewModel()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding = DataBindingUtil.setContentView(this, R.layout.activity_lista_transacoes)
+        setContentView(binding.root)
         binding.listaTransacoesResumo.viewmodel = transactionsListViewModel
         binding.listaTransacoesResumo.lifecycleOwner = this
 
@@ -37,7 +40,8 @@ class TransactionsListActivity : AppCompatActivity() {
                         visibility = View.VISIBLE
                         adapter = TransactionsListAdapter(
                             result.transactions,
-                            this@TransactionsListActivity
+                            this@TransactionsListActivity,
+                            itemClick = { transaction, pos -> updateTransactions(transaction, pos) }
                         )
                         addItemDecoration(dividerItemDecoration())
                     }
@@ -53,15 +57,15 @@ class TransactionsListActivity : AppCompatActivity() {
         })
 
         binding.listaTransacoesAdicionaReceita.setOnClickListener {
-            transactionsListViewModel.openDialog(
+            transactionsListViewModel.openAddDialog(
                 Type.RECEITA,
-                TransactionsDialog(this, binding.root as ViewGroup)
+                AddTransactionsDialog(this, binding.root as ViewGroup)
             )
         }
         binding.listaTransacoesAdicionaDespesa.setOnClickListener {
-            transactionsListViewModel.openDialog(
+            transactionsListViewModel.openAddDialog(
                 Type.DESPESA,
-                TransactionsDialog(this, binding.root as ViewGroup)
+                AddTransactionsDialog(this, binding.root as ViewGroup)
             )
         }
     }
@@ -80,5 +84,13 @@ class TransactionsListActivity : AppCompatActivity() {
         )
         return itemDecoration
 
+    }
+
+    private fun updateTransactions(transaction: Transaction, pos: Int) {
+        transactionsListViewModel.openUpdateDialog(
+            type = transaction.type, updateTransactionsDialog = UpdateTransactionsDialog(
+                this, binding.root as ViewGroup
+            ), transaction = transaction, position = pos
+        )
     }
 }

@@ -3,7 +3,6 @@ package com.example.alurafinancas.ui.listaTransacoes.dialog
 import android.app.AlertDialog
 import android.app.DatePickerDialog
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
@@ -19,11 +18,11 @@ import com.example.alurafinancas.extension.brazilianDateFormat
 import com.example.alurafinancas.extension.convertToCalendar
 import com.example.alurafinancas.ui.listaTransacoes.TransactionsListResult
 import java.math.BigDecimal
-import java.util.Calendar.*
+import java.util.*
 
-class TransactionsDialog(
+class UpdateTransactionsDialog(
     private val context: Context,
-    parent: ViewGroup,
+    parent: ViewGroup
 ) {
 
     private val dialogBinding: FormTransacaoBinding = DataBindingUtil.inflate(
@@ -46,32 +45,48 @@ class TransactionsDialog(
 
     fun createDialog(
         _result: MutableLiveData<TransactionsListResult>,
-        transactionsRepository: TransactionsRepository,
-        type: Type
+        repository: TransactionsRepository,
+        type: Type,
+        transaction: Transaction,
+        position: Int
     ): AlertDialog? {
+        dialogBinding.formTransacaoValor.setText(String.format(transaction.valor.toString()))
+        dialogBinding.formTransacaoCategoria.apply {
+            adapter = if (type == Type.RECEITA) adapterReceita else adapterDespesa
+            setSelection(
+                if (type == Type.RECEITA) context.resources.getStringArray(R.array.categorias_de_receita)
+                    .indexOf(transaction.categoria) else context.resources.getStringArray(R.array.categorias_de_despesa)
+                    .indexOf(transaction.categoria), true
+            )
+        }
 
         dialogBinding.formTransacaoData.apply {
-            setText(getInstance().brazilianDateFormat())
+            setText(transaction.data.brazilianDateFormat())
             setOnClickListener { openDatePicker(it as EditText) }
         }
 
-        dialogBinding.formTransacaoCategoria.adapter =
-            if (type == Type.RECEITA) adapterReceita else adapterDespesa
 
         return AlertDialog.Builder(context)
-            .setTitle(if (type == Type.RECEITA) R.string.adiciona_receita else R.string.adiciona_despesa)
+            .setTitle(
+                "Alterar ${
+                    if (type == Type.RECEITA) context.resources.getString(R.string.receita) else
+                        context.resources.getString(R.string.despesa)
+                }"
+            )
             .setView(dialogBinding.root)
-            .setPositiveButton("Adicionar") { _, _ ->
+            .setPositiveButton("Alterar") { _, _ ->
                 val valor = dialogBinding.formTransacaoValor.text.toString()
-                val data = getInstance()
-                data.time = dialogBinding.formTransacaoData.text.toString().convertToCalendar()
-                transactionsRepository.addTransaction(
+                val data = Calendar.getInstance()
+                dialogBinding.formTransacaoData.text.toString().convertToCalendar()
+                    ?.let { data.time = it }
+                repository.updateTransactions(
                     Transaction(
                         type = type,
                         valor = if (valor == "") BigDecimal.ZERO else BigDecimal(valor),
                         data = data,
                         categoria = dialogBinding.formTransacaoCategoria.selectedItem.toString()
-                    ), _result
+                    ), _result,
+                    position = position
                 )
                 dialogBinding.formTransacaoValor.setText("")
             }
@@ -79,18 +94,17 @@ class TransactionsDialog(
     }
 
     private fun openDatePicker(editData: EditText) {
-        val year = getInstance().get(YEAR)
-        val month = getInstance().get(MONTH)
-        val day = getInstance().get(DAY_OF_MONTH)
+        val year = Calendar.getInstance().get(Calendar.YEAR)
+        val month = Calendar.getInstance().get(Calendar.MONTH)
+        val day = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
 
         DatePickerDialog(
             context,
             { _, _, _, dayOfMonth ->
-                val date = getInstance()
+                val date = Calendar.getInstance()
                 date.set(year, month, dayOfMonth)
                 editData.setText(date.brazilianDateFormat())
             }, year, month, day
         ).show()
     }
-
 }

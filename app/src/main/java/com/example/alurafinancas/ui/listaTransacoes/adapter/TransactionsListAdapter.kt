@@ -14,11 +14,19 @@ import com.example.alurafinancas.extension.brazilianCurrencyFormat
 import com.example.alurafinancas.extension.brazilianDateFormat
 import com.example.alurafinancas.extension.stringLimit
 
-class TransactionsListAdapter(private val list: ArrayList<Transaction>, private val context: Context) :
+class TransactionsListAdapter(
+    private val list: ArrayList<Transaction>,
+    private val context: Context,
+    private val itemClick: (Transaction, Int) -> Unit
+) :
     RecyclerView.Adapter<TransactionsListAdapter.TransactionsListViewHolder>() {
 
     inner class TransactionsListViewHolder(val binding: TransacaoItemBinding) :
-        RecyclerView.ViewHolder(binding.root)
+        RecyclerView.ViewHolder(binding.root) {
+        fun setItemClick(transaction: Transaction, position: Int) {
+            binding.cardTransaction.setOnClickListener { itemClick(transaction, position) }
+        }
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         TransactionsListViewHolder(
@@ -47,6 +55,8 @@ class TransactionsListAdapter(private val list: ArrayList<Transaction>, private 
         holder.binding.transacaoCategoria.text = item.categoria.stringLimit(limit = 15)
         holder.binding.transacaoData.text = item.data.brazilianDateFormat()
         holder.binding.transacaoValor.text = item.valor.brazilianCurrencyFormat()
+
+        holder.setItemClick(item, position)
     }
 
     override fun getItemCount() = list.size
