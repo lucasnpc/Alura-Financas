@@ -28,11 +28,10 @@
                 fab:layout_constraintTop_toTopOf="parent" />
 
             <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/lista_transacoes_listview"
+                android:id="@+id/transactions_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:visibility="gone"
                 fab:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 fab:layout_constraintLeft_toLeftOf="parent"
                 fab:layout_constraintRight_toRightOf="parent"

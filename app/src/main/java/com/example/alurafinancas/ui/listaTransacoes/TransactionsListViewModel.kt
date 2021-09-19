@@ -21,43 +21,40 @@ class TransactionsListViewModel(val transactionsRepository: TransactionsReposito
     private val _result = MutableLiveData<TransactionsListResult>()
     val result: LiveData<TransactionsListResult> = _result
 
-    fun sumByType(type: Type) = if (_result.value?.transactions != null)
-        _result.value!!.transactions!!.filter { it.type == type }.sumOf { it.valor }
-            .brazilianCurrencyFormat()
-    else BigDecimal.ZERO.brazilianCurrencyFormat()
+    fun sumByType(type: Type) =
+        _result.value?.transactions?.filter { it.type == type }?.sumOf { it.valor }
+            ?.brazilianCurrencyFormat()
+            ?: BigDecimal.ZERO.brazilianCurrencyFormat()
 
     fun sumTotal(): String =
         BigDecimal(
             sumByType(Type.RECEITA).undoBrazilianFormat() - sumByType(Type.DESPESA).undoBrazilianFormat()
         ).brazilianCurrencyFormat()
 
-    fun openAddDialog(
+    fun openDialog(
+        transaction: Transaction? = null,
         type: Type,
-        addTransactionsDialog: AddTransactionsDialog
-    ) {
-        addTransactionsDialog.createDialog(
-            _result,
-            transactionsRepository,
-            type
-        )
-    }
+        addTransactionsDialog: AddTransactionsDialog? = null,
+        updateTransactionsDialog: UpdateTransactionsDialog? = null,
+        position: Int = 0
+    ) =
+        transaction?.let {
+            updateTransactionsDialog?.createDialog(
+                _result,
+                transactionsRepository,
+                type,
+                it,
+                position
+            )
+        }
+            ?: addTransactionsDialog?.createDialog(
+                _result,
+                transactionsRepository,
+                type
+            )
 
-    fun openUpdateDialog(
-        transaction: Transaction,
-        type: Type,
-        updateTransactionsDialog: UpdateTransactionsDialog,
-        position: Int
-    ) {
-        updateTransactionsDialog.createDialog(
-            _result,
-            transactionsRepository,
-            type,
-            transaction,
-            position
-        )
-    }
 
-    fun verifyTotalState(total: String) {
+    fun verifyTotalState(total: String) =
         VerifyTransactionsListState().verifyState(total, _state)
-    }
+
 }
