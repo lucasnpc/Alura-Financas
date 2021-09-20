@@ -56,8 +56,7 @@ class TransactionsListViewModel(val transactionsRepository: TransactionsReposito
     fun verifyTotalState(total: String) =
         VerifyTransactionsListState().verifyState(total, _state)
 
-    fun deleteTransactionAt(position: Int) {
+    fun deleteTransactionAt(position: Int) =
         transactionsRepository.deleteTransaction(_result, position)
-    }
 
 }

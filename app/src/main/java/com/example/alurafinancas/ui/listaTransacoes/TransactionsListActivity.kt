@@ -48,11 +48,7 @@ class TransactionsListActivity : AppCompatActivity() {
                         result.transactions,
                         this@TransactionsListActivity,
                         itemClick = { transaction, pos ->
-                            openDialog(
-                                transaction = transaction,
-                                pos = pos,
-                                type = transaction.type
-                            )
+                            openUpdateDialog(transaction, pos)
                         },
                         deleteItem = { position ->
                             transactionsListViewModel.deleteTransactionAt(position)
@@ -72,32 +68,32 @@ class TransactionsListActivity : AppCompatActivity() {
         })
 
         binding.listaTransacoesAdicionaReceita.setOnClickListener {
-            openDialog(type = Type.RECEITA)
+            openAddDialog(Type.RECEITA)
         }
 
         binding.listaTransacoesAdicionaDespesa.setOnClickListener {
-            openDialog(type = Type.DESPESA)
+            openAddDialog(Type.DESPESA)
         }
     }
 
-    private fun openDialog(
-        transaction: Transaction? = null,
-        pos: Int = 0,
-        type: Type
+    private fun openAddDialog(type: Type) =
+        transactionsListViewModel.openDialog(
+            type = type,
+            addTransactionsDialog = AddTransactionsDialog(this, binding.root as ViewGroup)
+        )
+
+    private fun openUpdateDialog(
+        transaction: Transaction,
+        pos: Int
     ) =
-        transaction?.let {
-            transactionsListViewModel.openDialog(
-                transactionToUpdate = it,
-                type = type,
-                updateTransactionsDialog = UpdateTransactionsDialog(
-                    this,
-                    binding.root as ViewGroup
-                ),
-                position = pos
-            )
-        }
-            ?: transactionsListViewModel.openDialog(
-                type = type,
-                addTransactionsDialog = AddTransactionsDialog(this, binding.root as ViewGroup)
-            )
+        transactionsListViewModel.openDialog(
+            transactionToUpdate = transaction,
+            type = transaction.type,
+            updateTransactionsDialog = UpdateTransactionsDialog(
+                this,
+                binding.root as ViewGroup
+            ),
+            position = pos
+        )
+
 }
