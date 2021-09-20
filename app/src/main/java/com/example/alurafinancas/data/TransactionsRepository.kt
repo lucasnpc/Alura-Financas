@@ -14,7 +14,7 @@ class TransactionsRepository {
         } else {
             transactions.add(transaction)
             result.value =
-                TransactionsListResult(success = true, transactions = ArrayList(transactions))
+                TransactionsListResult(success = true, transactions = transactions)
         }
 
     fun updateTransactions(
@@ -27,6 +27,11 @@ class TransactionsRepository {
         } else {
             transactions[position] = transaction
             result.value =
-                TransactionsListResult(success = true, transactions = ArrayList(transactions))
+                TransactionsListResult(success = true, transactions = transactions)
         }
+
+    fun deleteTransaction(result: MutableLiveData<TransactionsListResult>, position: Int) {
+        transactions.removeAt(position)
+        result.value = TransactionsListResult(success = true, transactions = transactions)
+    }
 }

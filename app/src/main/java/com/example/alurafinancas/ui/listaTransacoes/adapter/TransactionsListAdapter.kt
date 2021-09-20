@@ -2,8 +2,10 @@ package com.example.alurafinancas.ui.listaTransacoes.adapter
 
 import android.content.Context
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.forEach
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.example.alurafinancas.R
@@ -17,7 +19,8 @@ import com.example.alurafinancas.extension.stringLimit
 class TransactionsListAdapter(
     private val list: ArrayList<Transaction>,
     private val context: Context,
-    private val itemClick: (Transaction, Int) -> Unit
+    private val itemClick: (Transaction, Int) -> Unit,
+    private val deleteItem: (Int) -> Unit
 ) :
     RecyclerView.Adapter<TransactionsListAdapter.TransactionsListViewHolder>() {
 
@@ -57,9 +60,20 @@ class TransactionsListAdapter(
         holder.binding.transacaoValor.text = item.valor.brazilianCurrencyFormat()
 
         holder.setItemClick(item, position)
+        holder.binding.cardTransaction.setOnCreateContextMenuListener { menu, _, _ ->
+            menu?.apply {
+                add(Menu.NONE, 1, Menu.NONE, "Remover")
+                forEach { item ->
+                    item.setOnMenuItemClickListener {
+                        when (item.itemId) {
+                            1 -> deleteItem(position)
+                        }
+                        false
+                    }
+                }
+            }
+        }
     }
 
     override fun getItemCount() = list.size
-
-
 }

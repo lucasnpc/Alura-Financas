@@ -32,29 +32,32 @@ class TransactionsListViewModel(val transactionsRepository: TransactionsReposito
         ).brazilianCurrencyFormat()
 
     fun openDialog(
-        transaction: Transaction? = null,
+        transactionToUpdate: Transaction? = null,
         type: Type,
         addTransactionsDialog: AddTransactionsDialog? = null,
         updateTransactionsDialog: UpdateTransactionsDialog? = null,
         position: Int = 0
     ) =
-        transaction?.let {
+        transactionToUpdate?.let {
             updateTransactionsDialog?.createDialog(
-                _result,
-                transactionsRepository,
-                type,
-                it,
-                position
+                result = _result,
+                repository = transactionsRepository,
+                type = type,
+                transaction = it,
+                updatePosition = position
             )
         }
             ?: addTransactionsDialog?.createDialog(
-                _result,
-                transactionsRepository,
-                type
+                result = _result,
+                repository = transactionsRepository,
+                type = type
             )
-
 
     fun verifyTotalState(total: String) =
         VerifyTransactionsListState().verifyState(total, _state)
+
+    fun deleteTransactionAt(position: Int) {
+        transactionsRepository.deleteTransaction(_result, position)
+    }
 
 }

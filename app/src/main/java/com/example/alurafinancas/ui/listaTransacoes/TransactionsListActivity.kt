@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.example.alurafinancas.R
 import com.example.alurafinancas.data.enumList.Type
+import com.example.alurafinancas.data.model.Transaction
 import com.example.alurafinancas.databinding.ActivityListaTransacoesBinding
 import com.example.alurafinancas.ui.listaTransacoes.adapter.TransactionsListAdapter
 import com.example.alurafinancas.ui.listaTransacoes.dialog.AddTransactionsDialog
@@ -47,14 +48,14 @@ class TransactionsListActivity : AppCompatActivity() {
                         result.transactions,
                         this@TransactionsListActivity,
                         itemClick = { transaction, pos ->
-                            transactionsListViewModel.openDialog(
+                            openDialog(
                                 transaction = transaction,
-                                type = transaction.type,
-                                updateTransactionsDialog = UpdateTransactionsDialog(
-                                    this@TransactionsListActivity, binding.root as ViewGroup
-                                ),
-                                position = pos
+                                pos = pos,
+                                type = transaction.type
                             )
+                        },
+                        deleteItem = { position ->
+                            transactionsListViewModel.deleteTransactionAt(position)
                         }
                     )
                     transactionsListViewModel.verifyTotalState(
@@ -64,23 +65,39 @@ class TransactionsListActivity : AppCompatActivity() {
             }
 
             if (result.failed)
-                Toast.makeText(this, "Erro ao adicionar/alterar transacao", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Erro na transação!", Toast.LENGTH_LONG)
+                    .show()
 
             binding.listaTransacoesAdicionaMenu.close(true)
         })
 
         binding.listaTransacoesAdicionaReceita.setOnClickListener {
-            transactionsListViewModel.openDialog(
-                type = Type.RECEITA,
-                addTransactionsDialog = AddTransactionsDialog(this, binding.root as ViewGroup)
-            )
+            openDialog(type = Type.RECEITA)
         }
 
         binding.listaTransacoesAdicionaDespesa.setOnClickListener {
-            transactionsListViewModel.openDialog(
-                type = Type.DESPESA,
-                addTransactionsDialog = AddTransactionsDialog(this, binding.root as ViewGroup)
-            )
+            openDialog(type = Type.DESPESA)
         }
     }
+
+    private fun openDialog(
+        transaction: Transaction? = null,
+        pos: Int = 0,
+        type: Type
+    ) =
+        transaction?.let {
+            transactionsListViewModel.openDialog(
+                transactionToUpdate = it,
+                type = type,
+                updateTransactionsDialog = UpdateTransactionsDialog(
+                    this,
+                    binding.root as ViewGroup
+                ),
+                position = pos
+            )
+        }
+            ?: transactionsListViewModel.openDialog(
+                type = type,
+                addTransactionsDialog = AddTransactionsDialog(this, binding.root as ViewGroup)
+            )
 }
